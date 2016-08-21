@@ -1,0 +1,24 @@
+{
+    "name": "jlaso/simple-memory-db",
+    "description": "A simple db in memory",
+    "keywords": ["memory", "db"],
+    "homepage": "https://github.com/jlaso/simple-memory-db",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Joseluis Laso",
+            "role": "Developer"
+        }
+    ],
+    "version": "1.0",
+    "require": {
+        "php": ">=5.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "JLaso\\SimpleMemoryDb\\": "src/"
+        }
+    },
+    "minimum-stability": "dev"
+}

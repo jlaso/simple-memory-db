@@ -1,0 +1,17 @@
+[
+  {
+    "id": "1",
+    "name": "Tax type 1",
+    "percent": 6.5
+  },
+  {
+    "id": "2",
+    "name": "Tax type 2",
+    "percent": 7.1
+  },
+  {
+    "id": "3",
+    "name": "Tax type 3",
+    "percent": 8.25
+  }
+]
