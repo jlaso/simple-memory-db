@@ -1,6 +1,6 @@
 # simple-memory-db
 
-A simple db in memory
+A simple db in memory, has to be populated from JSON data
 
 # Installation
 

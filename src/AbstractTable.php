@@ -53,4 +53,19 @@ abstract class AbstractTable implements RepositoryInterface
 
         return $result;
     }
+
+    /**
+     * @param string $field
+     * @param $value
+     *
+     * @return int
+     */
+    public function count($field = null, $value = null)
+    {
+        if (!$field && !$value) {
+            return count($this->data);
+        }
+
+        return isset($this->indices[$field][$value]) ? count($this->indices[$field][$value]) : 0;
+    }
 }

@@ -17,3 +17,5 @@ foreach($databases['customers']->findAll() as $customer){
 
     printf("Customer (%d) %s applies %s [%f]\r\n", $customer['id'], $customer['name'], $tax['name'], $tax['percent']);
 }
+
+printf("There are %d customers\r\n", $databases['customers']->count());
