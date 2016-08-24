@@ -77,7 +77,9 @@ abstract class AbstractTable implements RepositoryInterface
      */
     public function insert($data)
     {
-        $this->processRecord($data);
+        if (!$this->processRecord($data)){
+            return;   
+        }
         $this->data[$data['id']] = gzcompress(json_encode($data), 9);
         // process indices
         foreach ($this->indexMap as $field) {
@@ -149,5 +151,6 @@ abstract class AbstractTable implements RepositoryInterface
     protected function processRecord(&$record)
     {
         // just override in the table child if you need to do something every time a record is processed when loaded in memory
+        return true;
     }
 }
