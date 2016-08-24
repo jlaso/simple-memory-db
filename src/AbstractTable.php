@@ -13,9 +13,16 @@ abstract class AbstractTable implements RepositoryInterface
      */
     public function __construct($data)
     {
-        foreach (json_decode($data, true) as $item) {
-            $this->insert($item);
-        };
+        if(is_array($data)){
+            $this->loadFromAssocArray($data);
+        }
+        if(is_string($data)){
+            if('.json' === substr($data,-5)){
+                $this->loadFromJsonFile($data);
+            }else{
+                $this->loadFromJsonString($data);
+            }
+        }
     }
 
     /**
@@ -103,9 +110,44 @@ abstract class AbstractTable implements RepositoryInterface
     }
 
     /**
+     * @param string $data
+     */
+    public function loadFromJsonString($data)
+    {
+        $this->loadFromAssocArray(json_decode($data, true));
+    }
+
+    /**
+     * @param mixed $data
+     */
+    public function loadFromAssocArray($data)
+    {
+        foreach ($data as $item) {
+            $this->insert($item);
+        };
+    }
+
+    /**
+     * @param string $fileName
+     */
+    public function loadFromJsonFile($fileName)
+    {
+        $this->loadFromJsonText(file_get_contents($fileName));
+    }
+
+    /**
+     * @param $fileName
+     */
+    public function saveToJsonFile($fileName)
+    {
+        file_put_contents($fileName, json_encode($this->findAll(), JSON_PRETTY_PRINT));
+    }
+
+    /**
      * @param mixed $record
      */
     protected function processRecord(&$record)
     {
+        // just override in the table child if you need to do something every time a record is processed when loaded in memory
     }
 }
