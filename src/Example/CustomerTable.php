@@ -7,6 +7,6 @@ use JLaso\SimpleMemoryDb\AbstractTable;
 class CustomerTable extends AbstractTable
 {
     protected $indexMap = [
-        "tax_type",
+        'tax_type_id',
     ];
 }
