@@ -38,8 +38,8 @@ abstract class AbstractTable implements RepositoryInterface
     /**
      * @param string $field
      * @param $value
-     *
      * @return array
+     * @throws \Exception
      */
     public function findAll($field = null, $value = null)
     {
@@ -49,6 +49,9 @@ abstract class AbstractTable implements RepositoryInterface
                 $result[$index] = json_decode(gzuncompress($item), true);
             }
         } else {
+            if(!isset($this->indices[$field][$value]) || !is_array($this->indices[$field][$value])){
+                throw new \Exception("Index {$field} doesn't have value {$value} on ".get_called_class());
+            }
             foreach ($this->indices[$field][$value] as $id) {
                 $result[$id] = json_decode(gzuncompress($this->data[$id]), true);
             }
