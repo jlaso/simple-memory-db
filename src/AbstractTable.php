@@ -9,18 +9,27 @@ abstract class AbstractTable implements RepositoryInterface
     protected $indexMap = [];
 
     /**
-     * Instance constructor.
+     * populate the table with the data provided, data can be an array, a json file name or a json string
+     * in any case we can provide a key to insert only the data found in this key, useful when the json array
+     * is an associative array starting with the key as the filename like this one
+     * {
+     *    "customers":[
+     *       ...
+     *    ]
+     * }
+     * @param string|mixed $data
+     * @param null|string $key
      */
-    public function __construct($data)
+    public function __construct($data, $key = null)
     {
         if(is_array($data)){
-            $this->loadFromAssocArray($data);
+            $this->loadFromAssocArray($data, $key);
         }
         if(is_string($data)){
             if('.json' === substr($data,-5)){
-                $this->loadFromJsonFile($data);
+                $this->loadFromJsonFile($data, $key);
             }else{
-                $this->loadFromJsonString($data);
+                $this->loadFromJsonString($data, $key);
             }
         }
     }
@@ -84,7 +93,7 @@ abstract class AbstractTable implements RepositoryInterface
             return;   
         }
         $this->data[$data['id']] = gzcompress(json_encode($data), 9);
-        // process indices
+        // process indices (insert the value into indices)
         foreach ($this->indexMap as $field) {
             $this->indices[$field][$data[$field]][] = $data['id'];
         }
@@ -98,7 +107,7 @@ abstract class AbstractTable implements RepositoryInterface
     {
         if(isset($this->data[$id])){
             $item = json_decode(gzuncompress($this->data[$id]), true);
-            // process indices
+            // process indices (remove the value from indices)
             foreach ($this->indexMap as $field) {
                 $index = array_search($this->indices[$field][$item[$field]], $id);
                 if(false !== $index){
@@ -116,17 +125,21 @@ abstract class AbstractTable implements RepositoryInterface
 
     /**
      * @param string $data
+     * @param null|string $key
      */
-    public function loadFromJsonString($data)
+    public function loadFromJsonString($data, $key = null)
     {
+        $data = $key ? (isset($data[$key]) $data[$key] ?  []) : $data;
         $this->loadFromAssocArray(json_decode($data, true));
     }
 
     /**
      * @param mixed $data
+     * @param null|string $key
      */
-    public function loadFromAssocArray($data)
+    public function loadFromAssocArray($data, $key = null)
     {
+        $data = $key ? (isset($data[$key]) $data[$key] ?  []) : $data;
         foreach ($data as $item) {
             $this->insert($item);
         };
@@ -134,10 +147,11 @@ abstract class AbstractTable implements RepositoryInterface
 
     /**
      * @param string $fileName
+     * @param null|string $key
      */
-    public function loadFromJsonFile($fileName)
+    public function loadFromJsonFile($fileName, $key = null)
     {
-        $this->loadFromJsonText(file_get_contents($fileName));
+        $this->loadFromJsonString(file_get_contents($fileName), $key);
     }
 
     /**
@@ -153,7 +167,8 @@ abstract class AbstractTable implements RepositoryInterface
      */
     protected function processRecord(&$record)
     {
-        // just override in the table child if you need to do something every time a record is processed when loaded in memory
+        // just override in the real table if you need to do something
+        // every time a record is processed when loaded in memory, look at the examples folders
         return true;
     }
 }

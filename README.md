@@ -1,16 +1,18 @@
-# simple-memory-db
+# jlaso/simple-memory-db
 
-A simple db in memory, that has to be populated from JSON data.
+### A simple db in memory, that has to be populated from JSON data.
 
 It lives entirely in memory, quick to access data and manipulate in order to process data at very high speed.
 
 # Installation
 
-You need only to require this package in your project ```composer require jlaso/simple-memory-db```
+You need only to require this package in your project 
 
-# Look at the Examples folders to see how to use it
+```composer require jlaso/simple-memory-db```
 
-## Example
+### Look at the Examples folders to see how to use it
+
+#### Example
 
 You have a very simple example with two tables: customers and taxes, each customer has a tax_type associated.
 
@@ -31,9 +33,9 @@ class CustomerTable extends AbstractTable
 }
 ```
 
-## BigExample
+#### BigExample
 
-You can just squeeze it in order to know how the limit of this database is in your system.
+You can just squeeze it in order to know how big is the limit of this database is in your system.
 
 In order to populate the memory tables with real data, the json files can be generated parametrically:
 
@@ -43,7 +45,9 @@ And to see the results
 
 ```php BigExample/demo.php```
 
-### If you need to add some extra field or process the records somehow when they are loaded in memory you can implement the method ```processRecord``` in your table
+### ProcessRecord
+
+If you need to add some extra fields or process the records somehow when they are loaded in memory you can implement the method ```processRecord``` in your table
 
 ```
 class TaxTable extends AbstractTable
@@ -59,17 +63,31 @@ class TaxTable extends AbstractTable
     {
         $module = count($this->subtypes);
         $record['subtype'] = $this->subtypes[intval($record['value'] * 100) % $module];
+        
+        return true;  // or return false if you want to filter this record
     }
 }
 ```
 
 Although is not a real database you can insert new elements or remove the existent ones:
 
+### ```Insert($data)```
+
 ```insert($data)```
+
+This insert the new record in memory and updates the indices to make it accesible
+
+### ```Remove($id)```
 
 ```remove($id)```
 
+This removes the record pointed by ```$id``` and updates the indices to make it not accesible
+
+### Storing method
+
 And, why not ... dump it into a json file again.
+
+```saveToJsonFile($fileName)```
 
 
 
