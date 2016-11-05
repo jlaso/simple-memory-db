@@ -2,11 +2,11 @@
   "1": {
     "id": "1",
     "name": "John Doe",
-    "tax_type": 1
+    "tax_type_id": 1
   },
   "2": {
     "id": "2",
     "name": "Jane Doe",
-    "tax_type": 3
+    "tax_type_id": 3
   }
 }

@@ -1,5 +1,11 @@
 # CHANGELOG
 
+##### 1.4 ~~ ```2016-11-05``` ~~
+
+- Improving error message
+- Adding interface to 'serialize' objects
+- Allowing call constructor with no parameters
+
 ##### 1.3 ~~ ```2016-08-27``` ~~ 
 
 - Added control of exceptions when selecting records with ```findAll('fieldName','value')```

@@ -20,15 +20,18 @@ abstract class AbstractTable implements RepositoryInterface
      * @param string|mixed $data
      * @param null|string $key
      */
-    public function __construct($data, $key = null)
+    public function __construct($data = null, $key = null)
     {
-        if(is_array($data)){
+        if (null === $data) {
+            return;
+        }
+        if (is_array($data)) {
             $this->loadFromAssocArray($data, $key);
         }
-        if(is_string($data)){
-            if('.json' === substr($data,-5)){
+        if (is_string($data)) {
+            if ('.json' === substr($data, -5)) {
                 $this->loadFromJsonFile($data, $key);
-            }else{
+            } else {
                 $this->loadFromJsonString($data, $key);
             }
         }
@@ -58,8 +61,9 @@ abstract class AbstractTable implements RepositoryInterface
                 $result[$index] = json_decode(gzuncompress($item), true);
             }
         } else {
-            if(!isset($this->indices[$field][$value]) || !is_array($this->indices[$field][$value])){
-                throw new \Exception("Index {$field} doesn't have value {$value} on ".get_called_class());
+            if (!isset($this->indices[$field][$value]) || !is_array($this->indices[$field][$value])) {
+                throw new \Exception("Index {$field} doesn't have value {$value} on " . get_called_class() .
+                    sprintf(' possible values are [%s]', join(',', array_keys($this->indices[$field]))));
             }
             foreach ($this->indices[$field][$value] as $id) {
                 $result[$id] = json_decode(gzuncompress($this->data[$id]), true);
@@ -89,8 +93,11 @@ abstract class AbstractTable implements RepositoryInterface
      */
     public function insert($data)
     {
-        if (!$this->processRecord($data)){
-            return;   
+        if($data instanceof ToArrayInterface){
+            $data = $data->toArray();
+        }
+        if (!$this->processRecord($data)) {
+            return;
         }
         $this->data[$data['id']] = gzcompress(json_encode($data), 9);
         // process indices (insert the value into indices)
@@ -105,12 +112,12 @@ abstract class AbstractTable implements RepositoryInterface
      */
     public function remove($id)
     {
-        if(isset($this->data[$id])){
+        if (isset($this->data[$id])) {
             $item = json_decode(gzuncompress($this->data[$id]), true);
             // process indices (remove the value from indices)
             foreach ($this->indexMap as $field) {
                 $index = array_search($id, $this->indices[$field][$item[$field]]);
-                if(false !== $index){
+                if (false !== $index) {
                     unset($this->indices[$field][$item[$field]][$index]);
                 }
             }
@@ -129,7 +136,7 @@ abstract class AbstractTable implements RepositoryInterface
      */
     public function loadFromJsonString($data, $key = null)
     {
-        $data = $key ? (isset($data[$key]) ? $data[$key] :  []) : $data;
+        $data = $key ? (isset($data[$key]) ? $data[$key] : []) : $data;
         $this->loadFromAssocArray(json_decode($data, true));
     }
 
@@ -139,7 +146,7 @@ abstract class AbstractTable implements RepositoryInterface
      */
     public function loadFromAssocArray($data, $key = null)
     {
-        $data = $key ? (isset($data[$key]) ? $data[$key] :  []) : $data;
+        $data = $key ? (isset($data[$key]) ? $data[$key] : []) : $data;
         foreach ($data as $item) {
             $this->insert($item);
         };
