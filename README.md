@@ -1,5 +1,7 @@
 # jlaso/simple-memory-db
 
+[![Build Status](https://travis-ci.org/jlaso/simple-memory-db.svg?branch=master)](https://travis-ci.org/jlaso/simple-memory-db)
+
 ### A simple db in memory, that has to be populated from JSON data.
 
 It lives entirely in memory, quick to access data and manipulate in order to process data at very high speed.
