@@ -30,7 +30,7 @@ use JLaso\SimpleMemoryDb\AbstractTable;
 class CustomerTable extends AbstractTable
 {
     protected $indexMap = [
-        "tax_type",
+        "tax_type_id",
     ];
 }
 ```
@@ -80,7 +80,8 @@ Although is not a real database you can insert new elements or remove the existe
 - ```insert($data)```
 
 This insert the new record in memory and updates 
-the indices to make it accesible.
+the indices to make it accessible.
+`$data` can be an array or an object that implements the `JLaso\SimpleMemoryDb\ToArrayInterface` 
 
 
 ## Remove
@@ -88,7 +89,7 @@ the indices to make it accesible.
 - ```remove($id)```
 
 This removes the record pointed by ```$id``` and 
-updates the indices to make it not accesible.
+updates the indices to make it not accessible.
 
 
 # Storing method
