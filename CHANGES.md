@@ -1,5 +1,10 @@
 # CHANGELOG
 
+##### 1.5 ~~ ```2016-11-06``` ~~
+
+- adding filterCallback function
+- removing exception when record not found
+
 ##### 1.4 ~~ ```2016-11-05``` ~~
 
 - Improving error message

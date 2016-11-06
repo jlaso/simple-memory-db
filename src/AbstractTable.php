@@ -7,6 +7,7 @@ abstract class AbstractTable implements RepositoryInterface
     protected $data = [];
     protected $indices = [];
     protected $indexMap = [];
+    protected $not_found_throws_exception = true;
 
     /**
      * populate the table with the data provided, data can be an array, a json file name or a json string
@@ -49,24 +50,35 @@ abstract class AbstractTable implements RepositoryInterface
 
     /**
      * @param string $field
-     * @param $value
+     * @param mixed $value
+     * @param callable $filterCallback
      * @return array
      * @throws \Exception
      */
-    public function findAll($field = null, $value = null)
+    public function findAll($field = null, $value = null, callable $filterCallback = null)
     {
         $result = [];
         if (!$field && !$value) {
             foreach ($this->data as $index => $item) {
-                $result[$index] = json_decode(gzuncompress($item), true);
+                $record = json_decode(gzuncompress($item), true);
+                if(!$filterCallback || $filterCallback($record)){
+                    $result[$index] = $record;
+                }
             }
         } else {
             if (!isset($this->indices[$field][$value]) || !is_array($this->indices[$field][$value])) {
-                throw new \Exception("Index {$field} doesn't have value {$value} on " . get_called_class() .
-                    sprintf(' possible values are [%s]', join(',', array_keys($this->indices[$field]))));
+                if($this->not_found_throws_exception) {
+                    throw new \Exception("Index {$field} doesn't have value {$value} on " . get_called_class() .
+                        sprintf(' possible values are [%s]', join(',', array_keys($this->indices[$field]))));
+                }else{
+                    return null;
+                }
             }
             foreach ($this->indices[$field][$value] as $id) {
-                $result[$id] = json_decode(gzuncompress($this->data[$id]), true);
+                $record = json_decode(gzuncompress($this->data[$id]), true);
+                if(!$filterCallback || $filterCallback($record)){
+                    $result[$id] = $record;
+                }
             }
         }
 
@@ -104,6 +116,15 @@ abstract class AbstractTable implements RepositoryInterface
         foreach ($this->indexMap as $field) {
             $this->indices[$field][$data[$field]][] = $data['id'];
         }
+    }
+
+    /**
+     * currently insert just overwrites the record by ID
+     * @param $data
+     */
+    public function update($data)
+    {
+        return $this->insert($data);
     }
 
     /**

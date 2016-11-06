@@ -3,8 +3,9 @@
 namespace JLaso\SimpleMemoryDb;
 
 use JLaso\SimpleMemoryDb\Example\CustomerTable;
+use JLaso\SimpleMemoryDb\Tests\AbstractTestCase;
 
-class DbTest extends \PHPUnit_Framework_TestCase
+class DbTest extends AbstractTestCase
 {
     protected $folder = __DIR__.'/../src/Example/';
 
@@ -30,19 +31,16 @@ class DbTest extends \PHPUnit_Framework_TestCase
 
     public function testSave()
     {
-        $tmp = __DIR__.'/tmp.json';
         $customerTbl = new CustomerTable();
-        $customerTbl->saveToJsonFile($tmp);
-        $this->assertEquals(file_get_contents($tmp), '[]');
+        $customerTbl->saveToJsonFile($this->tmpFile);
+        $this->assertEquals(file_get_contents($this->tmpFile), '[]');
 
         $customerTbl->insert(['id'=>1, 'name'=>'Test name', 'tax_type_id' => null]);
-        $customerTbl->saveToJsonFile($tmp);
+        $customerTbl->saveToJsonFile($this->tmpFile);
 
-        $customerTbl = new CustomerTable($tmp);
+        $customerTbl = new CustomerTable($this->tmpFile);
         $customer = $customerTbl->find(1);
         $this->assertEquals($customer['name'], 'Test name');
-
-        @unlink($tmp);
     }
 }
 
