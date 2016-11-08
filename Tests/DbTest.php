@@ -35,7 +35,7 @@ class DbTest extends AbstractTestCase
         $customerTbl->saveToJsonFile($this->tmpFile);
         $this->assertEquals(file_get_contents($this->tmpFile), '[]');
 
-        $customerTbl->insert(['id'=>1, 'name'=>'Test name', 'tax_type_id' => null]);
+        $customerTbl->insert(['id' => 1, 'name' => 'Test name', 'tax_type_id' => null]);
         $customerTbl->saveToJsonFile($this->tmpFile);
 
         $customerTbl = new CustomerTable($this->tmpFile);
@@ -43,4 +43,3 @@ class DbTest extends AbstractTestCase
         $this->assertEquals($customer['name'], 'Test name');
     }
 }
-

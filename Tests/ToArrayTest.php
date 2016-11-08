@@ -21,4 +21,3 @@ class ToArrayTest extends AbstractTestCase
         $this->assertEquals($customer['name'], 'Test name');
     }
 }
-

@@ -7,7 +7,7 @@ abstract class AbstractTable implements RepositoryInterface
     protected $data = [];
     protected $indices = [];
     protected $indexMap = [];
-    protected $not_found_throws_exception = true;
+    protected $notFoundThrowsException = true;
 
     /**
      * populate the table with the data provided, data can be an array, a json file name or a json string
@@ -17,9 +17,10 @@ abstract class AbstractTable implements RepositoryInterface
      *    "customers":[
      *       ...
      *    ]
-     * }
+     * }.
+     *
      * @param string|mixed $data
-     * @param null|string $key
+     * @param null|string  $key
      */
     public function __construct($data = null, $key = null)
     {
@@ -49,11 +50,15 @@ abstract class AbstractTable implements RepositoryInterface
     }
 
     /**
-     * @param string $field
-     * @param mixed $value
+     * @param string   $field
+     * @param mixed    $value
      * @param callable $filterCallback
+     *
      * @return array
+     *
      * @throws \Exception
+     *
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public function findAll($field = null, $value = null, callable $filterCallback = null)
     {
@@ -61,22 +66,22 @@ abstract class AbstractTable implements RepositoryInterface
         if (!$field && !$value) {
             foreach ($this->data as $index => $item) {
                 $record = json_decode(gzuncompress($item), true);
-                if(!$filterCallback || $filterCallback($record)){
+                if (!$filterCallback || $filterCallback($record)) {
                     $result[$index] = $record;
                 }
             }
         } else {
             if (!isset($this->indices[$field][$value]) || !is_array($this->indices[$field][$value])) {
-                if($this->not_found_throws_exception) {
-                    throw new \Exception("Index {$field} doesn't have value {$value} on " . get_called_class() .
-                        sprintf(' possible values are [%s]', join(',', array_keys($this->indices[$field]))));
-                }else{
+                if ($this->notFoundThrowsException) {
+                    throw new \Exception("Index {$field} doesn't have value {$value} on ".get_called_class().
+                        sprintf(' possible values are [%s]', implode(',', array_keys($this->indices[$field]))));
+                } else {
                     return null;
                 }
             }
             foreach ($this->indices[$field][$value] as $id) {
                 $record = json_decode(gzuncompress($this->data[$id]), true);
-                if(!$filterCallback || $filterCallback($record)){
+                if (!$filterCallback || $filterCallback($record)) {
                     $result[$id] = $record;
                 }
             }
@@ -105,7 +110,7 @@ abstract class AbstractTable implements RepositoryInterface
      */
     public function insert($data)
     {
-        if($data instanceof ToArrayInterface){
+        if ($data instanceof ToArrayInterface) {
             $data = $data->toArray();
         }
         if (!$this->processRecord($data)) {
@@ -119,7 +124,8 @@ abstract class AbstractTable implements RepositoryInterface
     }
 
     /**
-     * currently insert just overwrites the record by ID
+     * currently insert just overwrites the record by ID.
+     *
      * @param $data
      */
     public function update($data)
@@ -129,6 +135,7 @@ abstract class AbstractTable implements RepositoryInterface
 
     /**
      * @param int $id
+     *
      * @return bool
      */
     public function remove($id)
@@ -152,32 +159,32 @@ abstract class AbstractTable implements RepositoryInterface
     }
 
     /**
-     * @param string $data
+     * @param string      $data
      * @param null|string $key
      */
-    public function loadFromJsonString($data, $key = null)
+    private function loadFromJsonString($data, $key = null)
     {
         $data = $key ? (isset($data[$key]) ? $data[$key] : []) : $data;
         $this->loadFromAssocArray(json_decode($data, true));
     }
 
     /**
-     * @param mixed $data
+     * @param mixed       $data
      * @param null|string $key
      */
-    public function loadFromAssocArray($data, $key = null)
+    private function loadFromAssocArray($data, $key = null)
     {
         $data = $key ? (isset($data[$key]) ? $data[$key] : []) : $data;
         foreach ($data as $item) {
             $this->insert($item);
-        };
+        }
     }
 
     /**
-     * @param string $fileName
+     * @param string      $fileName
      * @param null|string $key
      */
-    public function loadFromJsonFile($fileName, $key = null)
+    private function loadFromJsonFile($fileName, $key = null)
     {
         $this->loadFromJsonString(file_get_contents($fileName), $key);
     }
@@ -192,12 +199,13 @@ abstract class AbstractTable implements RepositoryInterface
 
     /**
      * @param mixed $record
+     *
      * @return bool
      */
     protected function processRecord(&$record)
     {
         // just override in the real table if you need to do something
         // every time a record is processed when loaded in memory, look at the examples folders
-        return true;
+        return (bool) $record;
     }
 }

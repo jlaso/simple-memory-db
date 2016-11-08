@@ -20,7 +20,7 @@ abstract class AbstractTestCase extends \PHPUnit_Framework_TestCase
 
     protected function cleanTmp()
     {
-        if(file_exists($this->tmpFile)) {
+        if (file_exists($this->tmpFile)) {
             unlink($this->tmpFile);
         }
     }

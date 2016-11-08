@@ -17,5 +17,7 @@ class TaxTable extends AbstractTable
     {
         $module = count($this->subtypes);
         $record['subtype'] = $this->subtypes[intval($record['value'] * 100) % $module];
+
+        return true;
     }
 }

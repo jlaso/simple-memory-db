@@ -1,0 +1,13 @@
+build_settings:
+    ignore:
+        - "vendor"
+setup:
+    composer:
+        action: "install"
+test:
+    php_code_sniffer:
+        allowed_errors: 10
+        allowed_warnings: 10
+    php_unit:
+        config:
+            - "phpunit.xml.dist"

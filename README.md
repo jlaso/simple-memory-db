@@ -118,7 +118,7 @@ You can check the examples on the Tests folder.
  
 ## Exceptions
  
-Since version 1.5 added the property `$not_found_throws_exception` in order to throw or not 
+Since version 1.5 added the property `$notFoundThrowsException` in order to throw or not 
 an Excepcion in the case the record is not found.
 
 

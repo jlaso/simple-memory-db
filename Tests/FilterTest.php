@@ -24,7 +24,9 @@ class FilterTest extends AbstractTestCase
         $customers = $customerTbl->findAll();
         $this->assertEquals(2, count($customers));
 
-        $customers = $customerTbl->findAll(null, null, function($r) { return $r['tax_type_id'] == 2;});
+        $customers = $customerTbl->findAll(null, null, function ($r) {
+            return $r['tax_type_id'] == 2;
+        });
         $this->assertEquals(1, count($customers));
 
         $this->assertArrayHasKey(2, $customers);
@@ -32,4 +34,3 @@ class FilterTest extends AbstractTestCase
         $this->assertArrayNotHasKey(1, $customers);
     }
 }
-

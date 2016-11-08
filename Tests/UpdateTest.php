@@ -41,4 +41,3 @@ class UpdateTest extends AbstractTestCase
         $this->assertEquals($customers[1]['name'], 'No customer 1 anymore');
     }
 }
-

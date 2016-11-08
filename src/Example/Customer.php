@@ -1,6 +1,7 @@
 <?php
 
 namespace JLaso\SimpleMemoryDb\Example;
+
 use JLaso\SimpleMemoryDb\ToArrayInterface;
 
 class Customer implements ToArrayInterface
@@ -10,9 +11,9 @@ class Customer implements ToArrayInterface
     protected $taxType;
 
     /**
-     * @param int $id
+     * @param int    $id
      * @param string $name
-     * @param int $taxType
+     * @param int    $taxType
      */
     public function __construct($id, $name, $taxType)
     {
